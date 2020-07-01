@@ -2,40 +2,40 @@ import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
-import admin from './utility/auth';
 
 const app = express();
 const port = 3030 || process.env.PORT;
+const allowedOrigins = ['http://localhost:3000', 'http://website.com', `http://localhost:${port}`];
 
 /* MongoDB connection */
 
 /* Importing routers */
 const authRouter = require('./routes/auth-route.ts');
+const workoutRouter = require('./routes/workout-route.ts');
 
 /* Middleware */
 
 app.use(helmet()); // best security HTTP configs
+
 app.use(
   cors({
-    origin: [`http://localhost:${port}`],
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-'],
   })
 ); // for cross domain clientside-server communication
+
 app.use(express.json());
 app.use(compression());
 
 /* Routes */
 app.use('/api/auth', authRouter);
+app.use('/api/routine', workoutRouter);
 
-app.get('/user/:uid', async (req, res) => {
+app.get('/', async (req, res) => {
   try {
-    const uid = req.params.uid || '';
-    const userRecord = await admin.auth().getUser(uid);
-    console.log('Successfully fetched user data:', userRecord.toJSON());
-    res.status(202).send();
+    res.status(202).send('[GV79] GymTrack API');
   } catch (err) {
-    console.log('Error fetching user data:', err);
     res.status(404).send();
   }
 });

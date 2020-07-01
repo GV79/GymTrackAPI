@@ -1,11 +1,27 @@
-# GymTrackAPI
+# GymTrack Backend API
 
-API for GymTrack built in Node.js, Express, and TypeScript.
+This API for GymTrack was built using Node.js (Express), TypeScript and MongoDB.
 
 ## Development
 
-npm run dev
+1.
 
-## Deploying
+```
+$\ npm install
+```
 
-npm run build and npm start
+2.
+
+```
+$\ npm run dev
+```
+
+## Deployment
+
+1.
+
+`npm run build`
+
+2.
+
+`npm start`
