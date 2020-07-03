@@ -1,12 +1,13 @@
 import express from 'express';
 import admin from '../utility/auth';
-import client from '../utility/database';
 import { handleError } from '../utility/response-handler';
 import { verifyCredentials } from '../utility/validation';
 
+const mongoUtil = require('../utility/mongoUtil');
+
 const router = express.Router();
 
-/* Login and logout handled on clientside React application */
+/* Signup via Firebase Admin module */
 
 router.post('/signup', async (req, res) => {
   try {
@@ -24,16 +25,10 @@ router.post('/signup', async (req, res) => {
       disabled: false,
     });
 
-    client.connect(async (err: any) => {
-      if (err) throw new Error('Database connection could not be established.');
-      const collection = client.db('db').collection('users');
-
-      await collection.insertOne({
-        userId: user.uid,
-        routine: null,
-      });
-
-      client.close();
+    const collection = mongoUtil.getDb().collection('users');
+    await collection.insertOne({
+      userId: user.uid,
+      routine: null,
     });
 
     res.status(202).send();
