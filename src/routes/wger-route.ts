@@ -7,18 +7,14 @@ const router = express.Router();
 
 /* For grabbing data from wger API (for exercise data and information) */
 
-router.post('/', async (req, res) => {
+router.post('/', async (_req, res) => {
   try {
-    console.log('hello');
-    // const { token } = req.body;
-    // const user = await admin.auth().verifyIdToken(token);
-    const response = await axios.get('https://wger.de/api/v2/exercise/', {
+    const response = await axios.get('https://wger.de/api/v2/exercise/?limit=800', {
       headers: {
         Authorization: `Token ${process.env.WGER_API_KEY}`,
       },
     });
-    console.log(response.data);
-    res.status(200).send();
+    res.status(200).json(response.data);
   } catch (err) {
     const { status, message } = handleError(err);
     res.status(status).json({ message });

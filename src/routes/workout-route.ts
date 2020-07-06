@@ -3,6 +3,7 @@ import { handleError } from '../utility/response-handler';
 import admin from '../utility/auth';
 import { RoutineObject } from './schema/types';
 
+const mongodb = require('mongodb');
 const mongoUtil = require('../utility/mongoUtil');
 
 const router = express.Router();
@@ -107,7 +108,23 @@ router.put('/', async (req, res) => {
 /* Deleting Routine */
 router.delete('/', async (req, res) => {
   try {
-    const { id } = req.params; // routine ID
+    const { id } = req.body; // routine ID
+
+    const user = await admin.auth().verifyIdToken(req.body.token);
+    const db = mongoUtil.getDb();
+
+    const routinesCollection = db.collection('routines');
+    const usersCollection = db.collection('users');
+
+    await routinesCollection.deleteOne({ _id: new mongodb.ObjectID(id) });
+    const routines = await routinesCollection.find({ userId: user.user_id }).toArray();
+
+    if (routines && routines.length > 0) {
+      await usersCollection.updateOne({ userId: user.user_id }, { $set: { routine: routines[0]._id } });
+    } else {
+      await usersCollection.updateOne({ userId: user.user_id }, { $set: { routine: null } });
+    }
+
     res.status(202).send();
   } catch (err) {
     const { status, message } = handleError(err);

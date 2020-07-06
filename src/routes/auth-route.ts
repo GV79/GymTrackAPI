@@ -28,6 +28,7 @@ router.post('/signup', async (req, res) => {
     const collection = mongoUtil.getDb().collection('users');
     await collection.insertOne({
       userId: user.uid,
+      history: [],
       routine: null,
     });
 
