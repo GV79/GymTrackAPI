@@ -6,12 +6,17 @@ require('dotenv').config();
 
 const app = express();
 const port = 3030 || process.env.PORT;
-const allowedOrigins = ['http://localhost:3000', 'http://website.com', `http://localhost:${port}`];
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://website.com',
+  `http://localhost:${port}`,
+];
 
 /* Importing routers */
-const authRouter = require('./routes/auth-route.ts');
-const workoutRouter = require('./routes/workout-route.ts');
-const wgerRouter = require('./routes/wger-route.ts');
+const authRouter = require('./routes/auth-route');
+const workoutRouter = require('./routes/workout-route');
+const wgerRouter = require('./routes/wger-route');
 
 /* Middleware */
 
