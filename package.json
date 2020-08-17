@@ -24,7 +24,7 @@
     "express": "^4.17.1",
     "firebase-admin": "^8.12.1",
     "hashids": "^2.2.1",
-    "helmet": "^3.23.1",
+    "helmet": "^4.1.0",
     "mongodb": "^3.5.9"
   },
   "devDependencies": {
