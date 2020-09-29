@@ -7,9 +7,9 @@ require('dotenv').config();
 const app = express();
 const port = 3030 || process.env.PORT;
 const allowedOrigins = [
+  'https://gymtrack.me',
   'http://localhost:3000',
   'http://localhost:3001',
-  'http://website.com',
   `http://localhost:${port}`,
 ];
 
@@ -43,12 +43,8 @@ app.use(compression());
   app.use('/api/routine', workoutRouter);
   app.use('/api/info', wgerRouter);
 
-  app.get('/', async (req, res) => {
-    try {
-      res.status(202).send('[GV79] GymTrack API');
-    } catch (err) {
-      res.status(404).send();
-    }
+  app.get('/', (req, res) => {
+    res.status(202).send('[GV79] GymTrack API');
   });
 
   /* Starting server */
