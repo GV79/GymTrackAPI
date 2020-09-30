@@ -1,22 +1,17 @@
+require('dotenv').config();
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import compression from 'compression';
-require('dotenv').config();
+import rateLimit from 'express-rate-limit';
 
 const app = express();
-const port = 3030 || process.env.PORT;
+const port = 3030;
 const allowedOrigins = [
-  'https://gymtrack.me',
   'http://localhost:3000',
-  'http://localhost:3001',
   `http://localhost:${port}`,
+  process.env.NODE_ENV === 'production' ? 'https://infallible-blackwell-0b463a.netlify.app' : '',
 ];
-
-/* Importing routers */
-const authRouter = require('./routes/auth-route');
-const workoutRouter = require('./routes/workout-route');
-const wgerRouter = require('./routes/wger-route');
 
 /* Middleware */
 
@@ -28,9 +23,21 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization', 'Access-'],
   })
 ); // for cross domain clientside-server communication
-
 app.use(express.json());
 app.use(compression());
+app.set('trust proxy', 1);
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+});
+
+app.use(limiter); // API rate limiting
+
+/* Importing routers */
+const authRouter = require('./routes/auth-route');
+const workoutRouter = require('./routes/workout-route');
+const wgerRouter = require('./routes/wger-route');
 
 /* Establishing MongoDB connection and then starting up server */
 
@@ -48,7 +55,7 @@ app.use(compression());
   });
 
   /* Starting server */
-  app.listen(port, () => {
+  app.listen(process.env.PORT || port, () => {
     console.log(`Starting server on localhost:${port}`);
   });
 })().catch((err) => console.log(err));

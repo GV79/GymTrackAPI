@@ -8,6 +8,5 @@ export const verifyCredentials = (email: string, password: string): boolean => {
 
   // Invalid email format
   const regex = /\S+@\S+\.\S+/;
-
   return regex.test(email);
 };
